@@ -148,7 +148,7 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
 vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -736,7 +736,13 @@ require('lazy').setup({
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+
+            -- DEPRECATED => require('lspconfig')[server_name].setup(server)
+            vim.lsp.config(server_name, {
+              server,
+            })
+
+            vim.lsp.enable(server_name)
           end,
         },
       }
@@ -912,7 +918,7 @@ require('lazy').setup({
       require('catppuccin').setup {
         default_integrations = true,
         styles = {
-          comments = { 'bold' }, -- Disable italics in comments
+          comments = { 'bold' },
         },
       }
 
@@ -959,6 +965,9 @@ require('lazy').setup({
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
+
+      local tabline = require 'mini.tabline'
+      tabline.setup { use_icons = vim.g.have_nerd_font }
     end,
   },
   { -- Highlight, edit, and navigate code
